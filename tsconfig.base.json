@@ -23,6 +23,9 @@
       ],
       "@angular-jest-100/common/ui": [
         "libs/common/ui/src/index.ts"
+      ],
+      "@angular-jest-100/home": [
+        "libs/home/src/index.ts"
       ]
     }
   },
