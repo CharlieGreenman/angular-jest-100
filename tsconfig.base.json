@@ -44,6 +44,9 @@
       ],
       "@angular-jest-100/data-models": [
         "libs/data-models/src/index.ts"
+      ],
+      "@angular-jest-100/common/common-environment": [
+        "libs/common/common-environment/src/index.ts"
       ]
     }
   },
