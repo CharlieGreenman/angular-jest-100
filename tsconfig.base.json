@@ -26,6 +26,9 @@
       ],
       "@angular-jest-100/home": [
         "libs/home/src/index.ts"
+      ],
+      "@angular-jest-100/common/common-services": [
+        "libs/common/common-services/src/index.ts"
       ]
     }
   },
