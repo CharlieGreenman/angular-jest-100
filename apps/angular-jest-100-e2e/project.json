@@ -1,0 +1,29 @@
+{
+  "name": "angular-jest-100-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/angular-jest-100-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/angular-jest-100-e2e/cypress.json",
+        "devServerTarget": "angular-jest-100:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "angular-jest-100:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/angular-jest-100-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["angular-jest-100"]
+}
