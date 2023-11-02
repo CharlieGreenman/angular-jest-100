@@ -20,6 +20,9 @@
     "paths": {
       "@angular-jest-100/common/styles": [
         "libs/common/styles/src/index.ts"
+      ],
+      "@angular-jest-100/common/ui": [
+        "libs/common/ui/src/index.ts"
       ]
     }
   },
