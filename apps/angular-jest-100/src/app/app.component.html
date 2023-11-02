@@ -1,5 +1,21 @@
+<angular-jest-100-global-header
+  (sideNavToggle)="sideNavToggle()"
+></angular-jest-100-global-header>
 <div class="wrapper">
   <div class="container">
-    
+    <angular-jest-100-global-sidenav [opened]="sideNavOpen">
+      <mat-nav-list sidenav>
+        <a
+          mat-list-item
+          routerLinkActive="active-link"
+          routerLink="/"
+          (click)="sideNavToggle()"
+        >
+          <span class="App__sidenav-text">Home</span>
+        </a>
+      </mat-nav-list>
+      <router-outlet></router-outlet>
+    </angular-jest-100-global-sidenav>
   </div>
 </div>
+<angular-jest-100-global-footer> </angular-jest-100-global-footer>
