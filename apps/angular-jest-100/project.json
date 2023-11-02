@@ -7,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/angular-jest-100",
         "index": "apps/angular-jest-100/src/index.html",
@@ -19,7 +21,9 @@
           "apps/angular-jest-100/src/favicon.ico",
           "apps/angular-jest-100/src/assets"
         ],
-        "styles": ["apps/angular-jest-100/src/styles.scss"],
+        "styles": [
+          "apps/angular-jest-100/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -38,8 +42,8 @@
           ],
           "fileReplacements": [
             {
-              "replace": "apps/angular-jest-100/src/environments/environment.ts",
-              "with": "apps/angular-jest-100/src/environments/environment.prod.ts"
+              "replace": "libs/common/environments/src/lib/environment.ts",
+              "with": "libs/common/environments/src/lib/environment.prod.ts"
             }
           ],
           "outputHashing": "all"
@@ -84,7 +88,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/angular-jest-100"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/angular-jest-100"
+      ],
       "options": {
         "jestConfig": "apps/angular-jest-100/jest.config.ts",
         "passWithNoTests": true
