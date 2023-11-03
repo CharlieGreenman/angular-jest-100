@@ -1,0 +1,83 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+jobs:
+  setup:
+    runs-on: ubuntu-22.04-medium
+    outputs:
+      test-chunks: ${{ steps['set-test-chunks'].outputs['test-chunks'] }}
+      test-chunk-ids: ${{ steps['set-test-chunk-ids'].outputs['test-chunk-ids'] }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GitHubToken }}" >> ~/.npmrc
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: BRANCH=`echo ${GITHUB_REF/refs\/heads\//}`
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Dependencies
+        run: |
+          npm install
+      - uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r node_modules.zip node_modules
+      - run: ls -l
+      - uses: actions/upload-artifact@v3
+        with:
+          name: NodeModules
+          path: node_modules.zip
+      
+      - id: set-test-chunks
+        name: Set Chunks
+        run: echo "::set-output name=test-chunks::$(npx jest --listTests --json | jq -cM '[_nwise(length / 20 | ceil)]')"
+      - id: set-test-chunk-ids
+        name: Set Chunk IDs
+        run: echo "::set-output name=test-chunk-ids::$(echo $CHUNKS | jq -cM 'to_entries | map(.key)')"
+        env:
+          CHUNKS: ${{ steps['set-test-chunks'].outputs['test-chunks'] }}
+test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max_old_space_size=4096
+    name: test (chunk ${{ matrix.chunk }})
+    needs:
+      - setup
+    strategy:
+      matrix:
+        chunk: ${{ fromJson(needs.setup.outputs['test-chunk-ids']) }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GitHubToken }}" >> ~/.npmrc
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      - run: BRANCH=`echo ${GITHUB_REF/refs\/heads\//}`
+      - uses: actions/download-artifact@v3
+        with:
+          name: NodeModules
+      - uses: actions/download-artifact@v3
+        with:
+          name: Wasm
+      - run: ls -l
+      - uses: montudor/action-zip@v1
+        with:
+          args: unzip -qq node_modules.zip
+      - uses: montudor/action-zip@v1
+        with:
+          args: unzip -o -qq wasm.zip
+      - name: Set Node Modules Owner
+        run: |
+          ls -l
+          sudo chown -R runner:docker node_modules
+      - name: jest
+        run: echo $CHUNKS | jq '.[${{ matrix.chunk }}] | .[] | @text' | xargs npx jest --runInBand
+        env:
+          CHUNKS: ${{ needs.setup.outputs['test-chunks'] }}
